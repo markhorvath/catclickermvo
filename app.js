@@ -42,10 +42,21 @@ var viewList = {
         update : function() {
             var list = $('li');
             for (i = 0; i < list.length; i++){
-                list[i].addEventListener('click', function(i){
-                var name = document.getElementById('catname');
-                name.innerHTML = octopus.getCatName(i);
-                })
+                list[i].addEventListener('click', (function(iCopy){
+                    return function(){
+                        var name = document.getElementById('catname');
+                        name.innerHTML = octopus.getCatName(iCopy);
+                        var pic = document.getElementById('catpic');
+                        pic.src = octopus.getCatPic(iCopy);
+                        var count = octopus.getCatCount(iCopy);
+                        var clicks = document.getElementById('clicks');
+                        //clicks.innerHTML = "Clicks: " + octopus.getCatCount(iCopy);
+                        pic.addEventListener('click', function(){
+                            count += 1;
+                            clicks.innerHTML = "Clicks: " + count;
+                        })
+                    }
+                })(i))
             }
         }
 }
@@ -73,14 +84,13 @@ var octopus = {
             return cats[i].name;
         },
 
-            clickTrack : function(){
-                var pic = document.getElementById('catpic');
-                var p = document.getElementById('clicks');
-                pic.addEventListener('click', function(){
-                    cats[0].count += 1;
-                    p.innerHTML = "clicks: " + cats[0].count;
-                })
-            }
+        getCatPic : function(i){
+            return cats[i].pic;
+        },
+
+        getCatCount : function(i){
+            return cats[i].count;
+        }
 }
 
 octopus.init();
