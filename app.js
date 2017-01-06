@@ -15,7 +15,7 @@ var cats = [
             count : 0
         },
         {
-            name : "Two Cats One Nap",
+            name : "Two Cats",
             pic : "images/cat3.jpg",
             count : 0
         },
@@ -28,10 +28,15 @@ var cats = [
 
 var viewList = {
         render : function() {
+            //Should I create an IFFE here that includes the eventListener and calls a function to update the Details?  If so,
+            //where is the best place to create/store that function?
             for(var i = 0; i < cats.length; i++) {
                 var list = document.createElement('li');
                 list.innerHTML = cats[i].name;
                 document.getElementById('catlist').appendChild(list);
+                list.addEventListener('click', (function(copy){
+                    viewDetails.render(copy);
+                })(i))
                 }
             },
         update : function() {
