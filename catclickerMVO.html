@@ -9,6 +9,9 @@
         width: 30%;
         height: 30%;
     }
+    form {
+        margin: 5px;
+    }
 </style>
 <body>
     <h1>Cat Clicker MVO</h1>
@@ -22,6 +25,16 @@
         <img id = "catpic">
         <p id = "clicks">Clicks: </p>
     </div>
+    <button id = "admin"">Admin</button>
+    <form id = "form">
+        <label>Name: </label>
+        <input type = "text" id = "nameinput"><br>
+        <label>ImageURL: </label>
+        <input type =  "text" name = "urlinput"><br>
+        <label>Number of clicks: </label>
+        <input type = "text" name = "clicksinput"><br>
+        <button id="cancel">Cancel</button><button id="save">Save</button>
+    </form>
 </body>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="app.js"></script>

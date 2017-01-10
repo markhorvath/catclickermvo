@@ -1,4 +1,9 @@
-var cats = [
+var model = {
+        currentCat : null,
+
+        admin : false,
+
+        cats : [
         {
             name : "Cat Walker",
             pic : "images/cat.jpg",
@@ -23,74 +28,134 @@ var cats = [
             name : "Catty McCattercat",
             pic : "images/cat4.jpeg",
             count : 0
-        }];
+        }]
+};
+
+var octopus = {
+        init : function() {
+            model.currentCat = model.cats[0];
+            viewList.init();
+            viewDetails.init();
+            viewAdmin.init();
+        },
+
+        getCurrentCat : function() {
+            return model.currentCat;
+        },
+
+        getCats : function() {
+            return model.cats;
+        },
+
+        setCurrentCat : function(cat) {
+            model.currentCat = cat;
+        },
+
+        clickCounter : function() {
+            model.currentCat.count += 1;
+            viewDetails.render();
+        },
+        //function to show the form
+        showForm : function() {
+                model.admin = !model.admin;
+                document.getElementById('form').style.display = "block";
+        },
+        //function to hide the form
+        hideForm : function() {
+                model.admin == false;
+                document.getElementById('form').style.display = "none";
+        },
+        //function for updating current cat with new values from form input
+        updateCurrentCat : function(cat) {
+            //get the values from the input fields
+            var newName = document.getElementById('nameinput').value;
+            var newUrl = document.getElementById('urlinput').value;
+            var newClicks = document.getElementById('clicksinput').value;
+            //update currentCat with new values
+            cat.name = newName;
+            cat.count = newClicks;
+            cat.pic = newUrl;
+            this.setCurrentCat(cat)
+
+            console.log(model.currentCat);
+        }
+}
 
 
 var viewList = {
+
+        init : function() {
+            this.listElem = document.getElementById('catlist');
+            this.render();
+        },
+
         render : function() {
-            //Should I create an IFFE here that includes the eventListener and calls a function to update the Details?  If so,
-            //where is the best place to create/store that function?
+            var cats = octopus.getCats();
+
+            this.listElem.innerHTML = '';
+
             for(var i = 0; i < cats.length; i++) {
+                //var cat = cats[i];
+
                 var list = document.createElement('li');
-                list.innerHTML = cats[i].name;
-                document.getElementById('catlist').appendChild(list);
+                list.textContent = cats[i].name;
                 list.addEventListener('click', (function(copy){
-                    viewDetails.render(copy);
-                })(i))
-                }
-            },
-        update : function() {
-            var list = $('li');
-            for (i = 0; i < list.length; i++){
-                list[i].addEventListener('click', (function(iCopy){
-                    return function(){
-                        var name = document.getElementById('catname');
-                        name.innerHTML = octopus.getCatName(iCopy);
-                        var pic = document.getElementById('catpic');
-                        pic.src = octopus.getCatPic(iCopy);
-                        var count = octopus.getCatCount(iCopy);
-                        var clicks = document.getElementById('clicks');
-                        //clicks.innerHTML = "Clicks: " + octopus.getCatCount(iCopy);
-                        pic.addEventListener('click', function(){
-                            count += 1;
-                            clicks.innerHTML = "Clicks: " + count;
-                        })
-                    }
-                })(i))
+                    return function() {
+                        octopus.setCurrentCat(copy);
+                        viewDetails.render();
+                    };
+                })(cats[i]));
+                this.listElem.appendChild(list);
             }
         }
 }
 
 var viewDetails = {
-        render : function(i) {
-            var elem = document.getElementById('display');
-            var name = document.getElementById('catname');
-            var pic = document.getElementById('catpic');
-            var clicks = document.getElementById('clicks');
-            name.innerHTML = cats[i].name;
-            pic.src = cats[i].pic;
-            clicks.innerHTML = "Clicks: " + cats[i].count;
-            }
-}
-
-var octopus = {
         init : function() {
-            viewList.render();
-            viewDetails.render(0);
-            viewList.update();
-        },
+            this.elem = document.getElementById('display');
+            this.name = document.getElementById('catname');
+            this.pic = document.getElementById('catpic');
+            this.clicks = document.getElementById('clicks');
 
-        getCatName : function(i){
-            return cats[i].name;
-        },
-
-        getCatPic : function(i){
-            return cats[i].pic;
-        },
-
-        getCatCount : function(i){
-            return cats[i].count;
+            this.pic.addEventListener('click', function(){
+                octopus.clickCounter();
+            })
+            this.render();
+            },
+        render : function() {
+            var currentCat = octopus.getCurrentCat();
+            this.clicks.textContent = "Clicks: " + currentCat.count;
+            this.name.textContent = currentCat.name;
+            this.pic.src = currentCat.pic;
         }
 }
+
+var viewAdmin = {
+        init : function() {
+            octopus.hideForm();
+
+            this.admin = document.getElementById('admin');
+            this.cancel = document.getElementById('cancel');
+            this.save = document.getElementById('save');
+
+            this.admin.addEventListener('click', function(){
+                octopus.showForm();
+            })
+
+            this.cancel.addEventListener('click', function(){
+                octopus.hideForm();
+            })
+            //update model.currentCat with new input
+            this.save.addEventListener('click', function(){
+                var cat = octopus.getCurrentCat();
+                octopus.updateCurrentCat(cat);
+            })
+        },
+        render : function() {
+            this.name = document.getElementById('catname');
+            this.name.textContent = currentCat.name;
+        }
+}
+
 
 octopus.init();
