@@ -71,11 +71,21 @@ var octopus = {
             var newName = document.getElementById('nameinput').value;
             var newUrl = document.getElementById('urlinput').value;
             var newClicks = document.getElementById('clicksinput').value;
+            var form = document.getElementById('form');
             //update currentCat with new values
-            cat.name = newName;
-            cat.count = newClicks;
-            cat.pic = newUrl;
+            if(newName != ''){
+                cat.name = newName;
+            }
+            if(newClicks != ''){
+                cat.count = parseInt(newClicks);
+            }
+            if(newUrl != ''){
+                cat.pic = newUrl;
+            }
             this.setCurrentCat(cat)
+            viewDetails.render();
+            form.reset();
+            this.hideForm();
 
             console.log(model.currentCat);
         }
